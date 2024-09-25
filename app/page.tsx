@@ -1,10 +1,18 @@
-import Image from "next/image";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { redirect } from "next/navigation";
+import { Hero } from "./components/frontend/Hero";
 
-export default function Home() {
+export default async function Home() {
+  const { getUser } = getKindeServerSession();
+  const session = await getUser();
+
+  if (session?.id) {
+    return redirect("/dashboard");
+  }
+
   return (
-    <div className="flex justify-center items-center w-full min-h-screen flex-col">
-      <h1>Hyy Guys! Lets Create a Blog SAAS App</h1>
-      <h2>Installed Major Dependencies and Connected it with API keys</h2>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
+      <Hero />
     </div>
   );
 }
