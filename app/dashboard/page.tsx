@@ -1,6 +1,8 @@
 import React from 'react'
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
-const page = () => {
+const page = async () => {
+     
   return (
     <div>page</div>
   )
