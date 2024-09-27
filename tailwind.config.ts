@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import { withUt } from "uploadthing/tw";
 
 const config: Config = {
     darkMode: ["class"],
@@ -8,6 +9,13 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+	container: {
+		center: true,
+		padding: "2rem",
+		screens: {
+		  "2xl": "1400px",
+		},
+	  },
   	extend: {
   		colors: {
   			background: 'hsl(var(--background))',
@@ -62,6 +70,7 @@ const config: Config = {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")],
-};
-export default config;
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+} satisfies Config;
+
+export default withUt(config);

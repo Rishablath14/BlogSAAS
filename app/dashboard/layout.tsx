@@ -14,6 +14,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import { DashboardLinks } from "../components/dashboard/DashboardLinks";
+import { requireUserDB } from "@/utils/requireUser";
+import { redirect } from "next/navigation";
 
 export const navLinks = [
   {
@@ -38,7 +40,10 @@ export const navLinks = [
   },
 ];
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+
+export default async function DashboardLayout({ children }: { children: ReactNode }) {
+  // const user = await requireUserDB();
+  // if(user.role==="READER"){redirect("/");}
   return (
     <section className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-muted/40 md:block">

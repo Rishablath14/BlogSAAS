@@ -12,6 +12,6 @@ const Bloglayout = ({children}:{children:React.ReactNode}) => {
             <Footer />
         </div>
   )
-}
+}  
 
 export default Bloglayout
