@@ -1,8 +1,8 @@
 import { SubmitButton } from "@/app/components/dashboard/SubmitButtons";
 import { PricingTable } from "@/app/components/shared/Pricing";
-import prisma from "@/app/utils/db";
-import { requireUser } from "@/app/utils/requireUser";
-import { stripe } from "@/app/utils/stripe";
+import prisma from "@/utils/db";
+import { requireUser } from "@/utils/requireUser";
+import { stripe } from "@/utils/stripe";
 import {
   Card,
   CardContent,
@@ -41,7 +41,7 @@ export default async function PricingPage() {
       customer: data?.User?.customerId as string,
       return_url:
         process.env.NODE_ENV === "production"
-          ? "https://blog-marshal.vercel.app/dashboard"
+          ? ""
           : "http://localhost:3000/dashboard",
     });
 
