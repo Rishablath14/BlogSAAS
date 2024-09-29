@@ -189,6 +189,19 @@ export async function DeleteSite(formData: FormData) {
   return redirect("/dashboard/channels");
 }
 
+export async function CreateFreeSubscription() {
+  const user = await requireUser();
+    const upd = await prisma.user.update({
+      where: {
+        id: user.id
+      },
+      data: {
+        role: "AUTHOR",
+      }
+    });
+  console.log(upd);
+  return redirect("/dashboard");
+}
 export async function CreateSubscription() {
   const user = await requireUser();
 

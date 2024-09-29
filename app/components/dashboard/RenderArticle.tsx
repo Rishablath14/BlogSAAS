@@ -40,7 +40,7 @@ export function RenderArticle({ json }: { json: JSONContent }) {
 
   return (
     <div
-      className="prose m-auto w-11/12 sm:prose-lg dark:prose-invert sm:w-2/3 prose-li:marker:text-primary"
+      className="prose m-auto w-11/12 sm:prose-xl dark:prose-invert sm:w-2/3 prose-li:marker:text-primary"
       dangerouslySetInnerHTML={{ __html: outPut }}
     />
   );

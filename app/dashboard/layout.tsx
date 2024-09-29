@@ -30,7 +30,7 @@ export const navLinks = [
   },
   {
     name: "Subscription",
-    href: "/dashboard/subscription",
+    href: "/dashboard/pricing",
     icon: DollarSign,
   },
   {
@@ -42,8 +42,8 @@ export const navLinks = [
 
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
-  // const user = await requireUserDB();
-  // if(user.role==="READER"){redirect("/");}
+  const user = await requireUserDB();
+  if(user?.role==="READER"){redirect("/");}
   return (
     <section className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-muted/40 md:block">
@@ -71,7 +71,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
                   size="icon"
                   className="rounded-full"
                 >
-                  <CircleUser className="h-5 w-5" />
+                  {user?.profileImage?<Image src={user.profileImage} alt='logo' width={50} height={50} className='rounded-full w-auto h-auto' />:<CircleUser className="h-5 w-5" />}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">

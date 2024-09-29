@@ -4,8 +4,11 @@
 
 body {
   font-synthesis: none;
+  scroll-behavior: smooth;
 }
-
+html{
+  scroll-behavior: smooth;
+}
 
 @layer base {
   :root {

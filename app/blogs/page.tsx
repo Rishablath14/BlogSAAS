@@ -1,3 +1,4 @@
+import CategoryList from '@/components/CategoryList';
 import Featured from '@/components/Featured';
 import React from 'react'
 
@@ -6,6 +7,11 @@ const page = ({ searchParams }: { searchParams: { page: string } }) => {
   return (
     <div className='w-full min-h-screen'>
       <Featured />
+      <CategoryList />
+      <div className="flex gap-12">
+        <CardList page={page}/>
+        <Menu />
+      </div>
     </div>
   )
 }

@@ -15,6 +15,9 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "RLexicon",
+  icons: {
+    icon: "/RLexiconLogo.svg",
+  },
   description: "RLexicon - A Freemium Multi-Tenant Blog SaaS Platform.",
 };
 
@@ -24,8 +27,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className="scroll-smooth">
+      <body className={`${geistSans.variable} ${geistMono.variable} scroll-smooth`}>
       <ThemeProvider
             attribute="class"
             defaultTheme="system"

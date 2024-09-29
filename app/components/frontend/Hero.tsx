@@ -1,57 +1,128 @@
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/public/RLexiconLogo.svg";
-
 import {
   LoginLink,
+  LogoutLink,
   RegisterLink,
 } from "@kinde-oss/kinde-auth-nextjs/components";
 import { Button } from "@/components/ui/button";
-// import HeroImage from "@/public/hero.png";
+import HeroImage from "@/public/home.png";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ModeToggle } from "@/components/ThemeToggler";
+import { requireUserDB } from "@/utils/requireUser";
+import prisma from "@/utils/db";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { CircleUser } from "lucide-react";
 
-export function Hero() {
+export async function Hero() {
+  const user = await requireUserDB();
   return (
     <>
-      <div className="relative flex flex-col w-full py-5 mx-auto md:flex-row md:items-center md:justify-between">
-        <div className="flex flex-row items-center justify-between text-sm lg:justify-start">
-          <Link href="/" className="flex items-center gap-2">
-          <Image src={Logo} alt='logo' width={200} height={200} className='dark:drop-shadow-[1px_0.5px_0.5px_white]' />
-          </Link>
-          <div className="md:hidden">
-            <ModeToggle />
-          </div>
-        </div>
-
-        <nav className="hidden md:flex md:justify-end md:space-x-4">
+      <div className="sticky flex w-full py-5 mx-auto items-center justify-between">
+        <Link href="/" className="flex items-center gap-2">
+          <Image
+            src={Logo}
+            alt="logo"
+            width={200}
+            height={200}
+            className="dark:drop-shadow-[1px_0.5px_0.5px_white]"
+          />
+        </Link>
+        <ul className="hidden md:flex items-center gap-4 justify-center ">
+          <li>
+            <Link href="#home" className="hover:underline me-4 md:me-6">
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link scroll href="#about" className="hover:underline me-4 md:me-6">
+              About
+            </Link>
+          </li>
+          <li>
+            <Link href="#pricing" className="hover:underline me-4 md:me-6">
+              Pricing
+            </Link>
+          </li>
+          <li>
+            <Link href="#contact" className="hover:underline me-4 md:me-6">
+              Contact
+            </Link>
+          </li>
+        </ul>
+        <div className="flex justify-end space-x-4">
           <ModeToggle />
-          <LoginLink>
-            <Button variant="secondary">Sign in</Button>
-          </LoginLink>
-          <RegisterLink>
-            <Button>Sign up</Button>
-          </RegisterLink>
-        </nav>
+          {!user ? (
+            <>
+              <LoginLink>
+                <Button variant="secondary">Sign in</Button>
+              </LoginLink>
+              <RegisterLink>
+                <Button>Sign up</Button>
+              </RegisterLink>
+            </>
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="rounded-full"
+                >
+                  {user?.profileImage ? (
+                    <Image
+                      src={user.profileImage}
+                      alt="logo"
+                      width={50}
+                      height={50}
+                      className="rounded-full w-auto h-auto"
+                    />
+                  ) : (
+                    <CircleUser className="h-5 w-5" />
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <LogoutLink>Log out</LogoutLink>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
       </div>
 
-      <section className="relative flex items-center justify-center">
+      <section className="relative flex items-center justify-center" id="home">
         <div className="relative items-center w-full py-12 lg:py-20">
           <div className="text-center">
-            <span className="text-sm text-primary font-medium tracking-tight bg-primary/10 px-4 py-2 rounded-full">
-              Ultimate Blogging SaaS for Startups
+            <span className="text-sm text-primary font-medium tracking-tight bg-primary/10 px-2 sm:px-4 py-2 rounded-full">
+              ✨ Create. Manage. Grow Your Blog Effortlessly.
             </span>
 
-            <h1 className="mt-8 text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-medium leading-none">
+            <h1 className="mt-6 text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-medium leading-none">
               Setup your Blog{" "}
               <span className="block text-primary">in Minutes!</span>
             </h1>
 
-            <p className="max-w-2xl mx-auto mt-4 text-base font-medium lg:text-lg text-muted-foreground tracking-tighter">
-              Setting up your blog is hard and time consuming. We make it easy for you to create a blog in minutes.
+            <p className="max-w-2xl mx-auto mt-4 text-sm sm:text-base font-medium lg:text-lg text-muted-foreground tracking-tighter">
+              Unleash the power of content creation with RLexicon—the ultimate
+              Blog SaaS platform for writers and creators. Manage blogs,
+              collaborate with your team, and grow your audience—all in one
+              place.
             </p>
             <div className="flex items-center gap-x-5 w-full justify-center mt-5 ">
-              <Button variant="secondary" className="font-bold">Explore as Reader</Button>
-              <Button className="font-bold">Sign Up as Author</Button>
+              <Button variant="secondary" className="font-bold">
+                <Link href={"/blogs"}>Explore as Reader</Link>
+              </Button>
+              <Button className="font-bold">
+                <Link href={"#pricing"}>Sign Up as Author</Link>
+              </Button>
             </div>
           </div>
 
@@ -92,7 +163,7 @@ export function Hero() {
                   id="filter0_f_10_20"
                   width="720.666"
                   x="-160.333"
-                  y="-160.333"
+                  y="-180.333"
                 >
                   <feFlood
                     floodOpacity="0"
@@ -106,17 +177,17 @@ export function Hero() {
                   ></feBlend>
                   <feGaussianBlur
                     result="effect1_foregroundBlur_10_20"
-                    stdDeviation="80.1666"
+                    stdDeviation="60.1666"
                   ></feGaussianBlur>
                 </filter>
               </defs>
             </svg>
-            {/* <Image
-              src=''
+            <Image
+              src={HeroImage}
               alt="Hero image"
               priority
               className="relative object-cover w-full border rounded-lg shadow-2xl lg:rounded-2xl"
-            /> */}
+            />
           </div>
         </div>
       </section>

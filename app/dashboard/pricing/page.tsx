@@ -1,7 +1,7 @@
 import { SubmitButton } from "@/app/components/dashboard/SubmitButtons";
 import { PricingTable } from "@/app/components/shared/Pricing";
 import prisma from "@/utils/db";
-import { requireUser } from "@/utils/requireUser";
+import { requireUserDB } from "@/utils/requireUser";
 import { stripe } from "@/utils/stripe";
 import {
   Card,
@@ -31,8 +31,8 @@ async function getData(userId: string) {
 }
 
 export default async function PricingPage() {
-  const user = await requireUser();
-  const data = await getData(user.id);
+  const user = await requireUserDB();
+  const data = await getData(user?.id?user.id:"");
 
   async function createCustomerPortal() {
     "use server";
@@ -70,7 +70,7 @@ export default async function PricingPage() {
 
   return (
     <div>
-      <PricingTable />
+      <PricingTable loggedIn={user !== null} role={user?.role?user.role:"READER"} status={data?.status === "active"} />
     </div>
   );
 }

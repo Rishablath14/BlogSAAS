@@ -1,3 +1,4 @@
+"use client"
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,8 +10,12 @@ import {
 } from "@/components/ui/card";
 import { Check,X } from "lucide-react";
 import { SubmitButton } from "../dashboard/SubmitButtons";
-import Link from "next/link";
-import { CreateSubscription } from "@/actions";
+import { CreateFreeSubscription, CreateSubscription } from "@/actions";
+import { requireUser } from "@/utils/requireUser";
+import prisma from "@/utils/db";
+import { redirect } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface iAppProps {
   id: number;
@@ -32,6 +37,7 @@ export const PricingPlans: iAppProps[] = [
       "Normal Blog Editor",
     ],
     nots: [
+      "Add Channel Editor",
       "SEO AI Helper",
       "24X7 Support",
       "Earning Support",
@@ -42,11 +48,12 @@ export const PricingPlans: iAppProps[] = [
     id: 1,
     cardTitle: "Startup",
     cardDescription: "The best pricing plan for professionals.",
-    priceTitle: "$25",
+    priceTitle: "$25/month",
     benefits: [
       "Unlimited Channels",
       "Unimlited Visitors",
       "Notion-like Rich Blog Editor",
+      "Add Channel Editor",
       "SEO AI Helper",
       "24X7 Support",
       "Earning Support"
@@ -54,17 +61,26 @@ export const PricingPlans: iAppProps[] = [
   },
 ];
 
-export function PricingTable() {
+export function PricingTable({loggedIn,role,status}:{loggedIn:boolean,role:string,status:boolean}) {
+  const [loading, setLoading] = useState(false);
+  const handleFree = async () => {
+    if(!loggedIn){
+      toast.error("Login to continue");
+      return;
+    }
+    setLoading(true);
+    await CreateFreeSubscription();
+  }
   return (
     <>
-      <div className="max-w-3xl mx-auto text-center">
+      <div className="max-w-5xl mx-auto text-center" id="pricing">
         <p className="font-semibold text-primary">Pricing</p>
-        <h1 className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">
+        <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-5xl">
           Pricing Plans for everyone and every budget!
-        </h1>
+        </h2>
       </div>
 
-      <p className="mx-auto mt-6 max-w-2xl text-center leading-tight text-muted-foreground">
+      <p className="mx-auto mt-4 max-w-2xl text-center leading-tight text-muted-foreground">
         Choose the plan that is right for you. You can also switch plans later.
       </p>
 
@@ -111,11 +127,14 @@ export function PricingTable() {
             <CardFooter>
               {item.id === 1 ? (
                 <form className="w-full" action={CreateSubscription}>
+                  { loggedIn && !status ?
                   <SubmitButton text="Buy Plan" className="mt-5 w-full" />
+                  : <Button className="mt-5 w-full" disabled={status} onClick={handleFree}>{status?"Already Taken":"Buy Plan"}</Button>
+                  }
                 </form>
               ) : (
-                <Button variant="outline" className="mt-5 w-full" asChild>
-                  <Link href="/dashboard">Try for free</Link>
+                <Button variant="outline" disabled={role!=="READER" || loading?true:false} className="mt-5 w-full" onClick={handleFree}>
+                    {role==="READER"?loading?"Loading...":"Try For Free":"Already Taken"}
                 </Button>
               )}
             </CardFooter>

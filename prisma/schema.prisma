@@ -72,13 +72,13 @@ model Post {
 }
 
 model Comment {
-  id        String   @id @default(cuid()) @map("_id")
+  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   desc      String
   userId    String?
   User      User?    @relation(fields: [userId], references: [id])
   postSlug  String
-  post      Post     @relation(fields: [postSlug], references: [slug])
+  post      Post     @relation(fields: [postSlug], references: [slug], onDelete: Cascade)
 }
 
 model Subscription {
@@ -97,5 +97,4 @@ model Subscription {
 enum Role {
   READER
   AUTHOR
-  EDITOR
 }
