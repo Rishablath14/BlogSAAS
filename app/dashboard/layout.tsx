@@ -17,30 +17,6 @@ import { DashboardLinks } from "../components/dashboard/DashboardLinks";
 import { requireUserDB } from "@/utils/requireUser";
 import { redirect } from "next/navigation";
 
-export const navLinks = [
-  {
-    name: "Dashboard",
-    href: "/dashboard",
-    icon: Home,
-  },
-  {
-    name: "Channels",
-    href: "/dashboard/channels",
-    icon: Globe,
-  },
-  {
-    name: "Subscription",
-    href: "/dashboard/pricing",
-    icon: DollarSign,
-  },
-  {
-    name: "Settings",
-    href: "/dashboard/settings",
-    icon: Settings,
-  },
-];
-
-
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const user = await requireUserDB();
   if(!user) {redirect("/api/auth/login");}
