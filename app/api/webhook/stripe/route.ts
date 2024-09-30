@@ -1,12 +1,12 @@
 import prisma from "@/utils/db";
+import Stripe from "stripe";
 import { stripe } from "@/utils/stripe";
 import { headers } from "next/headers";
-import Stripe from "stripe";
 
 export async function POST(req: Request) {
   const body = await req.text();
 
-  const signature = headers().get("Stripe-Signature") as string;
+  const signature = headers().get('Stripe-Signature') as string;
 
   let event: Stripe.Event;
 
