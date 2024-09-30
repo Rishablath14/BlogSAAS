@@ -9,8 +9,6 @@ const page = ({ searchParams }: { searchParams: { page: string } }) => {
       <Featured />
       <CategoryList />
       <div className="flex gap-12">
-        <CardList page={page}/>
-        <Menu />
       </div>
     </div>
   )

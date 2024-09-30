@@ -1,4 +1,3 @@
-import { SubmitButton } from "@/app/components/dashboard/SubmitButtons";
 import { PricingTable } from "@/app/components/shared/Pricing";
 import prisma from "@/utils/db";
 import { requireUserDB } from "@/utils/requireUser";
