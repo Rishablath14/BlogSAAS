@@ -13,7 +13,7 @@ export async function CreateSiteAction(prevState: any, formData: FormData) {
   const [subStatus, sites] = await Promise.all([
     prisma.subscription.findUnique({
       where: {
-        userId: user.id,
+        userId: user?.id,
       },
       select: {
         status: true,
@@ -21,7 +21,7 @@ export async function CreateSiteAction(prevState: any, formData: FormData) {
     }),
     prisma.channel.findMany({
       where: {
-        userId: user.id,
+        userId: user?.id,
       },
     }),
   ]);
@@ -52,7 +52,7 @@ export async function CreateSiteAction(prevState: any, formData: FormData) {
           description: submission.value.description,
           name: submission.value.name,
           subdirectory: submission.value.subdirectory,
-          userId: user.id,
+          userId: user?.id,
         },
       });
 
@@ -86,7 +86,7 @@ export async function CreateSiteAction(prevState: any, formData: FormData) {
         description: submission.value.description,
         name: submission.value.name,
         subdirectory: submission.value.subdirectory,
-        userId: user.id,
+        userId: user?.id,
       },
     });
     return redirect("/dashboard/channels");
@@ -110,7 +110,7 @@ export async function CreatePostAction(prevState: any, formData: FormData) {
       slug: submission.value.slug,
       articleContent: JSON.parse(submission.value.articleContent),
       image: submission.value.coverImage,
-      userId: user.id,
+      userId: user?.id,
       catSlug:submission.value.category,
       channelId: formData.get("siteId") as string,
     },
@@ -132,7 +132,7 @@ export async function EditPostActions(prevState: any, formData: FormData) {
 
   const data = await prisma.post.update({
     where: {
-      userId: user.id,
+      userId: user?.id,
       id: formData.get("articleId") as string,
     },
     data: {
@@ -152,7 +152,7 @@ export async function DeletePost(formData: FormData) {
 
   const data = await prisma.post.delete({
     where: {
-      userId: user.id,
+      userId: user?.id,
       id: formData.get("articleId") as string,
     },
   });
@@ -165,7 +165,7 @@ export async function UpdateImage(formData: FormData) {
 
   const data = await prisma.channel.update({
     where: {
-      userId: user.id,
+      userId: user?.id,
       id: formData.get("siteId") as string,
     },
     data: {
@@ -181,7 +181,7 @@ export async function DeleteSite(formData: FormData) {
 
   const data = await prisma.channel.delete({
     where: {
-      userId: user.id,
+      userId: user?.id,
       id: formData.get("siteId") as string,
     },
   });
@@ -193,7 +193,7 @@ export async function CreateFreeSubscription() {
   const user = await requireUser();
     const upd = await prisma.user.update({
       where: {
-        id: user.id
+        id: user?.id
       },
       data: {
         role: "AUTHOR",
@@ -207,7 +207,7 @@ export async function CreateSubscription() {
 
   let stripeUserId = await prisma.user.findUnique({
     where: {
-      id: user.id,
+      id: user?.id,
     },
     select: {
       customerId: true,
@@ -224,7 +224,7 @@ export async function CreateSubscription() {
 
     stripeUserId = await prisma.user.update({
       where: {
-        id: user.id,
+        id: user?.id,
       },
       data: {
         customerId: stripeCustomer.id,
