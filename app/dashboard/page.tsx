@@ -12,6 +12,8 @@ import Image from "next/image";
 import Defaultimage from "@/public/default.png";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+
 
 async function getData(userId: string) {
   const [sites, articles] = await Promise.all([
@@ -40,6 +42,7 @@ async function getData(userId: string) {
 
 export default async function DashboardIndexPage() {
   const user = await requireUser();
+  if(!user) redirect("/api/auth/login");
   const { articles, sites } = await getData(user.id);
   return (
     <div>
