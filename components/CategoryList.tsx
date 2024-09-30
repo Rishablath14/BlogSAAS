@@ -10,7 +10,7 @@ const CategoryList = async () => {
     <div>
       <h1 className="my-12">Popular Categories</h1>
       <div className="flex flex-wrap justify-between gap-5">
-        {data?.map((item) => (
+        {data && data?.map((item) => (
           <Link
             href="/blog?cat=style"
             style={{ backgroundColor: bgColors[Math.floor(Math.random() * bgColors.length)] }}
