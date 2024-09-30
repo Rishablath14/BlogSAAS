@@ -5,12 +5,14 @@ import PricingSection from "@/components/PriceTable";
 import { AboutSection } from "./components/frontend/About";
 import ContactSection from "./components/frontend/Contact";
 import Footer from "./components/frontend/Footer";
+import { requireUserDB } from "@/utils/requireUser";
 
 
 export default async function Home() {
+    const user = await requireUserDB();  
     return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <Hero />
+    <div className="max-w-7xl mx-auto">
+      <Hero user={user}/>
       <AboutSection/>
       <PricingSection/>
       <ContactSection/>

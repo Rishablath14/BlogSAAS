@@ -244,12 +244,12 @@ export async function CreateSubscription() {
     },
     success_url:
       process.env.NODE_ENV === "production"
-        ? ""
-        : "http://localhost:3000/dashboard/payment/success",
+        ? "https://rlexicon.vercel.app/payment/success"
+        : "http://localhost:3000/payment/success",
     cancel_url:
       process.env.NODE_ENV === "production"
-        ? ""
-        : "http://localhost:3000/dashboard/payment/cancelled",
+        ? "https://rlexicon.vercel.app/payment/cancelled"
+        : "http://localhost:3000/payment/cancelled",
   });
 
   return redirect(session.url as string);

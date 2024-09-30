@@ -11,9 +11,6 @@ import {
 import { Check,X } from "lucide-react";
 import { SubmitButton } from "../dashboard/SubmitButtons";
 import { CreateFreeSubscription, CreateSubscription } from "@/actions";
-import { requireUser } from "@/utils/requireUser";
-import prisma from "@/utils/db";
-import { redirect } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -29,7 +26,7 @@ interface iAppProps {
 export const PricingPlans: iAppProps[] = [
   {
     id: 0,
-    cardTitle: "Freelancer",
+    cardTitle: "Startup",
     cardDescription: "The best pricing plan for people starting out.",
     benefits: [
       "Only 1 Channel",
@@ -46,9 +43,9 @@ export const PricingPlans: iAppProps[] = [
   },
   {
     id: 1,
-    cardTitle: "Startup",
-    cardDescription: "The best pricing plan for professionals.",
-    priceTitle: "$25/month",
+    cardTitle: "Professional",
+    cardDescription: "The best pricing plan for professionals team.",
+    priceTitle: "2000",
     benefits: [
       "Unlimited Channels",
       "Unimlited Visitors",
@@ -91,7 +88,7 @@ export function PricingTable({loggedIn,role,status}:{loggedIn:boolean,role:strin
               <CardTitle>
                 {item.id === 1 ? (
                   <div className="flex items-center justify-between">
-                    <h3 className="text-primary">Startup</h3>
+                    <h3 className="text-primary">Professionals</h3>
 
                     <p className="rounded-full bg-primary/20 px-3 py-1 text-xs font-semibold leading-5 text-primary">
                       Most popular
@@ -104,8 +101,10 @@ export function PricingTable({loggedIn,role,status}:{loggedIn:boolean,role:strin
               <CardDescription>{item.cardDescription}</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="mt-6 text-4xl font-bold tracking-tight">
-                {item.priceTitle}
+              <p className="mt-6 flex items-baseline">
+              {item.id === 1 && <span className="mr-1 text-4xl font-semibold">₹</span>}  
+              <span className="text-5xl font-extrabold tracking-tight">{item.priceTitle}</span>
+              {item.id === 1 && <span className="ml-1 text-xl font-semibold">/month</span>}
               </p>
 
               <ul className="mt-8 space-y-3 text-sm leading-6 text-muted-foreground">

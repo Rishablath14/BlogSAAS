@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function PaymentSucess() {
   return (
-    <div className="w-full flex flex-1 justify-center items-center">
+    <div className="w-full h-screen flex flex-1 justify-center items-center">
       <Card className="w-[350px]">
         <div className="p-6">
           <div className="w-full flex justify-center">
@@ -19,7 +19,7 @@ export default function PaymentSucess() {
             </p>
 
             <Button asChild className="w-full mt-5">
-              <Link href="/dashboard">Go back to Dashboard</Link>
+              <Link href="/dashboard">Go to Dashboard</Link>
             </Button>
           </div>
         </div>

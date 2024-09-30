@@ -16,15 +16,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ModeToggle } from "@/components/ThemeToggler";
 import { requireUserDB } from "@/utils/requireUser";
-import prisma from "@/utils/db";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { CircleUser } from "lucide-react";
-
-export async function Hero() {
-  const user = await requireUserDB();
+import { User } from "@prisma/client";
+export function Hero({ user }: { user: User|null }) {
   return (
     <>
-      <div className="sticky flex w-full py-5 mx-auto items-center justify-between">
+      <div className="fixed backdrop-blur-md z-50 flex w-full xl:w-[90%] 2xl:w-[85%] px-2 sm:px-4 md:px-6 mx-auto items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <Image
             src={Logo}
@@ -34,38 +31,42 @@ export async function Hero() {
             className="dark:drop-shadow-[1px_0.5px_0.5px_white]"
           />
         </Link>
-        <ul className="hidden md:flex items-center gap-4 justify-center ">
+        <ul className="hidden md:flex items-center gap-4 md:gap-6 justify-center ">
           <li>
-            <Link href="#home" className="hover:underline me-4 md:me-6">
+            <Link href="#home" className="hover:underline">
               Home
             </Link>
           </li>
           <li>
-            <Link scroll href="#about" className="hover:underline me-4 md:me-6">
+            <Link scroll href="#about" className="hover:underline">
               About
             </Link>
           </li>
           <li>
-            <Link href="#pricing" className="hover:underline me-4 md:me-6">
+            <Link href="#pricing" className="hover:underline">
               Pricing
             </Link>
           </li>
           <li>
-            <Link href="#contact" className="hover:underline me-4 md:me-6">
+            <Link href="#contact" className="hover:underline">
               Contact
             </Link>
           </li>
+          { user?.role !== "READER" &&
+            <li>
+              <Link href="/dashboard" className="hover:underline bg-primary text-primary-foreground p-2 rounded-[10px]">
+                Dashboard
+              </Link>
+            </li>
+          }
         </ul>
         <div className="flex justify-end space-x-4">
           <ModeToggle />
-          {!user ? (
+          {user===null ? (
             <>
               <LoginLink>
-                <Button variant="secondary">Sign in</Button>
+                <Button className="font-light">Signin / Signup</Button>
               </LoginLink>
-              <RegisterLink>
-                <Button>Sign up</Button>
-              </RegisterLink>
             </>
           ) : (
             <DropdownMenu>
@@ -98,7 +99,10 @@ export async function Hero() {
         </div>
       </div>
 
-      <section className="relative flex items-center justify-center" id="home">
+      <section
+        className="relative pt-20 flex items-center justify-center"
+        id="home"
+      >
         <div className="relative items-center w-full py-12 lg:py-20">
           <div className="text-center">
             <span className="text-sm text-primary font-medium tracking-tight bg-primary/10 px-2 sm:px-4 py-2 rounded-full">
@@ -121,7 +125,7 @@ export async function Hero() {
                 <Link href={"/blogs"}>Explore as Reader</Link>
               </Button>
               <Button className="font-bold">
-                <Link href={"#pricing"}>Sign Up as Author</Link>
+                <Link href={"/dashboard"}>Sign Up as Author</Link>
               </Button>
             </div>
           </div>

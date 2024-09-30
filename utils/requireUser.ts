@@ -16,7 +16,7 @@ export const requireUser = async () => {
 export const requireUserDB = async () => {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
-
+    
   if (!user) {
     return null;
   }

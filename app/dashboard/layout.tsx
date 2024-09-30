@@ -43,7 +43,8 @@ export const navLinks = [
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const user = await requireUserDB();
-  if(user?.role==="READER"){redirect("/");}
+  if(!user) {redirect("/api/auth/login");}
+  if(user?.role==="READER"){redirect("/#pricing");}
   return (
     <section className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-muted/40 md:block">
