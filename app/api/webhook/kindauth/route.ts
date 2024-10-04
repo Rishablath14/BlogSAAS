@@ -3,12 +3,14 @@ import jwt from "jsonwebtoken";
 import type { JwtPayload } from "jsonwebtoken";
 import prisma from "@/utils/db";
 import { NextResponse } from "next/server";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 const client = jwksClient({
   jwksUri: `${process.env.KINDE_ISSUER_URL}/.well-known/jwks.json`,
 });
 
 export async function POST(req: Request) {
+  
   try {
     // Get the token from the request
     const token = await req.text();
@@ -35,8 +37,10 @@ export async function POST(req: Request) {
     switch (event?.type) {
       case "user.authenticated":
         // create a user in our database
-        const user = event.data.user;
-        console.log(event.data);
+        const { getUser } = getKindeServerSession();
+        const user = await getUser();
+        const user1 = event.data.user;
+        console.log(user);
         let dbUser = await prisma.user.findUnique({
             where: {
               id: user.id,
@@ -47,8 +51,8 @@ export async function POST(req: Request) {
          dbUser = await prisma.user.create({
               data: {
                 id: user.id,
-                firstName: user.first_name ?? "",
-                lastName: user.last_name ?? "",
+                firstName: user.given_name ?? "",
+                lastName: user.family_name ?? "",
                 email: user.email ?? "",
                 customerId: "",
                 profileImage:
