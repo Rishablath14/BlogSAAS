@@ -37,13 +37,13 @@ export async function POST(req: Request) {
       case "user.created":
         // create a user in our database
         const user = event.data.user;
-        console.log(user);
+        console.log(event.data);
         if (!user || user === null || !user.id) throw new Error("Something went wrong");         
          await prisma.user.create({
               data: {
                 id: user.id,
-                firstName: user.given_name ?? "",
-                lastName: user.family_name ?? "",
+                firstName: user.first_name ?? "",
+                lastName: user.last_name ?? "",
                 email: user.email ?? "",
                 customerId: "",
                 profileImage:
