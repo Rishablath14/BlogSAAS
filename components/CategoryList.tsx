@@ -7,7 +7,7 @@ const CategoryList = async () => {
   const data = await prisma.category.findMany();
   const bgColors = ["#57c4ff31","#7fb88133","#f8b26a33","#f2d27f33","#f4a26133","#e76f51"];
   return (
-    <div>
+    <div className="px-2 md:px-4 lg:px-6">
       <h1 className="my-12">Popular Categories</h1>
       <div className="flex flex-wrap justify-between gap-5">
         {data && data?.map((item) => (

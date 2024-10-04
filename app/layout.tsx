@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
+import AppContextProvider from "@/components/AppContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -14,11 +15,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "RLexicon",
-  icons: {
-    icon: "/RLexiconLogo.svg",
-  },
-  description: "RLexicon - A Freemium Multi-Tenant Blog SaaS Platform.",
+  title: "RLexicon - Setup your Blog in Minutes",
+  description: "Unleash the power of content creation with RLexicon—the ultimate Blog SaaS platform. Manage blogs, collaborate with your team, and grow your audience—all in one place.",
 };
 
 export default function RootLayout({
@@ -35,7 +33,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+        <AppContextProvider>
         {children}
+        </AppContextProvider>    
         <Toaster richColors closeButton />
         </ThemeProvider>
       </body>

@@ -33,7 +33,7 @@ export async function GET() {
 
   return NextResponse.redirect(
     process.env.NODE_ENV === "production"
-      ? "https://rlexicon.vercel.app/dashboard"
-      : "http://localhost:3000/dashboard"
+      ? "https://rlexicon.vercel.app"
+      : "http://localhost:3000"
   );
 }

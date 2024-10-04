@@ -56,6 +56,7 @@ model Post {
   id               String    @id @default(uuid())
   title            String
   articleContent   Json
+  content          String
   smallDescription String
   image            String
   slug             String    @unique

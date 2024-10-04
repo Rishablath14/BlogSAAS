@@ -4,7 +4,7 @@ import AboutImage from "@/public/home.png";
 
 export function AboutSection() {
   return (
-    <section id="about" className="relative py-16 mb-2 sm:mb-6 lg:mb-8">
+    <section id="about" className="relative py-8 md:py-16 mb-2 sm:mb-6 lg:mb-8">
       <div className="container mx-auto px-6 text-gray-600 dark:text-gray-300">
         <div className="flex flex-wrap items-center -mx-4">
           <div className="w-full md:w-1/2 px-4 mb-12 md:mb-0">
@@ -27,6 +27,26 @@ export function AboutSection() {
             <Image src={AboutImage} alt="About RLexicon" className="w-full h-auto rounded-lg shadow-lg" />
           </div>
         </div>
+        <div className="mt-12">
+              <p className="mb-4 text-lg text-primary">Everything you need to create, manage, and grow your blog.</p>
+              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                {[
+                  { title: "SEO Optimization", description: "Built-in AI SEO tools." },
+                  { title: "Content Management", description: "Easily create, edit, and organize your blog posts." },
+                  { title: "Analytics Dashboard", description: "Blog's Detailed Analytics Dashboard." },
+                  { title: "Manage Channels", description: "Create, edit, and manage your blog channels." },
+                  { title: "Manage Channel Editors", description: "Add editors and collaborate with your team." },
+                  { title: "Monetization Tools", description: "Integrate ads, sponsorships, and marketing easily." },
+                ].map((feature, index) => (
+                  <div key={index} className="overflow-hidden shadow shadow-zinc-800 rounded-lg">
+                    <div className="px-4 py-5 sm:p-4">
+                      <h3 className="text-lg font-bold text-black dark:text-white">{feature.title}</h3>
+                      <p className="mt-2 text-base text-gray-500 dark:text-gray-400">{feature.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
       </div>
     </section>
   );

@@ -72,7 +72,7 @@ export function PricingTable({loggedIn,role,status}:{loggedIn:boolean,role:strin
     <>
       <div className="max-w-5xl mx-auto text-center" id="pricing">
         <p className="font-semibold text-primary">Pricing</p>
-        <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-5xl">
+        <h2 className="mt-2 text-lg font-bold tracking-tight sm:text-3xl md:text-4xl lg:text-5xl">
           Pricing Plans for everyone and every budget!
         </h2>
       </div>

@@ -7,7 +7,7 @@ import ContactImage from "@/public/home.png";
 
 export default function ContactSection() {
   return (
-    <section className="py-16 my-4" id="contact">
+    <section className="py-8 md:py-16 my-4" id="contact">
       <div className="container mx-auto px-6 text-gray-700 dark:text-gray-300">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-800 dark:text-white">Get in Touch with Us</h2>

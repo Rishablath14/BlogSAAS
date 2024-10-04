@@ -15,14 +15,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Atom } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
-import TailwindEditor from "../EditorWrapper";
 import { SubmitButton } from "../SubmitButtons";
-import { useActionState, useState } from "react";
+import { use, useActionState, useState } from "react";
 import { JSONContent } from "novel";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { PostSchema } from "@/utils/zodSchemas";
-import { CreatePostAction, EditPostActions } from "@/actions";
+import {useKindeBrowserClient} from "@kinde-oss/kinde-auth-nextjs";
+import { CreatePostAction, deleteImageFromUploadthing, EditPostActions } from "@/actions";
+import Editor from "../EditorWrapper";
+import { useUserInfo } from "@/components/AppContext";
 
 interface iAppProps {
   data: {
@@ -30,6 +32,7 @@ interface iAppProps {
     title: string;
     smallDescription: string;
     articleContent: any;
+    content:string|undefined;
     catSlug: string;
     id: string;
     image: string;
@@ -63,7 +66,8 @@ export function EditArticleForm({ data, siteId }: iAppProps) {
     shouldValidate: "onBlur",
     shouldRevalidate: "onInput",
   });
-
+   
+  const {userInfo}:any = useUserInfo();
   function handleSlugGeneration() {
     const titleInput = title;
 
@@ -75,12 +79,15 @@ export function EditArticleForm({ data, siteId }: iAppProps) {
 
     return toast.success("Slug has been created");
   }
+  const {user} = useKindeBrowserClient();
+  console.log(user);
+  
   return (
     <Card className="mt-5">
       <CardHeader>
         <CardTitle>Article Details</CardTitle>
         <CardDescription>
-          Lipsum dolor sit amet, consectetur adipiscing elit
+        Edit your article for your blog with the form below and submit.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -170,40 +177,54 @@ export function EditArticleForm({ data, siteId }: iAppProps) {
               defaultValue={fields.coverImage.initialValue}
               value={imageUrl}
             />
-            {imageUrl ? (
-              <Image
+                 <div className="flex flex-col sm:flex-row items-center gap-4 border border-zinc-800 border-dashed rounded-lg">
+              
+                <UploadDropzone
+                className="flex-1"
+                  onClientUploadComplete={(res) => {
+                    if(imageUrl) deleteImageFromUploadthing([imageUrl.substring(imageUrl.lastIndexOf("/") + 1)]);
+                    setImageUrl(res[0].url);
+                    toast.success("Image has been uploaded");
+                  }}
+                  endpoint="imageUploader"
+                  onUploadError={() => {
+                    toast.error("Something went wrong...");
+                  }}
+                  />
+                  {imageUrl &&
+                <Image
                 src={imageUrl}
-                alt="Uploaded Image"
-                className="object-cover w-[200px] h-[200px] rounded-lg"
-                width={200}
-                height={200}
-              />
-            ) : (
-              <UploadDropzone
-                onClientUploadComplete={(res) => {
-                  setImageUrl(res[0].url);
-                  toast.success("Image has been uploaded");
-                }}
-                endpoint="imageUploader"
-                onUploadError={() => {
-                  toast.error("Something went wrong...");
-                }}
-              />
-            )}
+                  alt="Uploaded Image"
+                  className="object-contain flex-1 w-[200px] h-[250px] rounded-lg"
+                  width={200}
+                  height={200}
+                />
+                }
+                </div>
 
             <p className="text-red-500 text-sm">{fields.coverImage.errors}</p>
           </div>
 
           <div className="grid gap-2">
             <Label>Article Content</Label>
-            <input
-              type="hidden"
-              name={fields.articleContent.name}
-              key={fields.articleContent.key}
-              defaultValue={fields.articleContent.initialValue}
-              value={JSON.stringify(value)}
-            />
-            <TailwindEditor onChange={setValue} initialValue={value} />
+              <input
+                type="hidden"
+                name={fields.articleContent.name}
+                key={fields.articleContent.key}
+                defaultValue={fields.articleContent.initialValue}
+                value={JSON.stringify(value)}
+              />
+              {userInfo && userInfo.Subscription?.status === "active"?<>
+              <p className="text-sm text-gray-500">Press &apos; / &apos; to see the command lists</p>
+                <Editor onChange={setValue} initialValue={value} /> 
+              </>
+              :<Textarea
+              name={fields.content.name}
+              key={fields.content.key}
+              className="h-40"
+              placeholder="Write your blog content here..."
+              defaultValue={data.content}
+            />}
             <p className="text-red-500 text-sm">
               {fields.articleContent.errors}
             </p>

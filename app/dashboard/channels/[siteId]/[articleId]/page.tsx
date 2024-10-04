@@ -15,6 +15,7 @@ async function getData(postId: string) {
       title: true,
       smallDescription: true,
       slug: true,
+      content: true,
       catSlug: true,
       articleContent: true,
       id: true,

@@ -6,7 +6,19 @@ import { PostSchema, SiteCreationSchema, siteSchema } from "./utils/zodSchemas";
 import prisma from "./utils/db";
 import { requireUser } from "@/utils/requireUser";
 import { stripe } from "@/utils/stripe";
+import { UTApi } from "uploadthing/server";
+const utapi = new UTApi();
 
+
+// Function to delete an image from Uploadthing
+export async function deleteImageFromUploadthing(images: string[]) {
+  if(images.length < 1) return;
+  try {
+    const res = await utapi.deleteFiles(images);
+  } catch (error) {
+    console.error("Error deleting image from Uploadthing:", error);
+  }
+}
 export async function CreateSiteAction(prevState: any, formData: FormData) {
   const user = await requireUser();
 
@@ -102,15 +114,32 @@ export async function CreatePostAction(prevState: any, formData: FormData) {
   if (submission.status !== "success") {
     return submission.reply();
   }
-
+  let dataContent;
+  if(submission?.value?.content){
+    const paragraphs = submission?.value?.content
+      .split("\n")
+      .map((paragraph) => ({
+        type: "paragraph",
+        content: [
+          {
+            type: "text",
+            text: paragraph,
+          },
+        ],
+      }));
+ dataContent = {
+    type: "doc",
+    content: paragraphs,
+  };}
   const data = await prisma.post.create({
     data: {
       title: submission.value.title,
       smallDescription: submission.value.smallDescription,
       slug: submission.value.slug,
-      articleContent: JSON.parse(submission.value.articleContent),
+      articleContent: submission?.value?.content && submission?.value?.content.trim() ?dataContent:JSON.parse(submission.value.articleContent),
       image: submission.value.coverImage,
       userId: user?.id,
+      content: submission.value.content?submission.value.content:"",
       catSlug:submission.value.category,
       channelId: formData.get("siteId") as string,
     },
@@ -129,7 +158,23 @@ export async function EditPostActions(prevState: any, formData: FormData) {
   if (submission.status !== "success") {
     return submission.reply();
   }
-
+  let dataContent;
+  if(submission?.value?.content){
+    const paragraphs = submission?.value?.content
+      .split("\n")
+      .map((paragraph) => ({
+        type: "paragraph",
+        content: [
+          {
+            type: "text",
+            text: paragraph,
+          },
+        ],
+      }));
+ dataContent = {
+    type: "doc",
+    content: paragraphs,
+  };}
   const data = await prisma.post.update({
     where: {
       userId: user?.id,
@@ -139,8 +184,10 @@ export async function EditPostActions(prevState: any, formData: FormData) {
       title: submission.value.title,
       smallDescription: submission.value.smallDescription,
       slug: submission.value.slug,
-      articleContent: JSON.parse(submission.value.articleContent),
+      content: submission.value.content?submission.value.content:"",
+      articleContent: submission?.value?.content && submission?.value?.content.trim() ?dataContent:JSON.parse(submission.value.articleContent),
       image: submission.value.coverImage,
+      catSlug:submission.value.category,
     },
   });
 
@@ -149,7 +196,17 @@ export async function EditPostActions(prevState: any, formData: FormData) {
 
 export async function DeletePost(formData: FormData) {
   const user = await requireUser();
-
+  const post = await prisma.post.findUnique({
+    where: {
+      userId: user?.id,
+      id: formData.get("articleId") as string,
+    },
+    select: {
+      image: true, // Get the image URL to delete it from Uploadthing
+    },
+  });
+  const images = post?.image ? [post.image.substring(post.image.lastIndexOf("/") + 1)]:[];
+  await deleteImageFromUploadthing(images);
   const data = await prisma.post.delete({
     where: {
       userId: user?.id,
@@ -178,7 +235,21 @@ export async function UpdateImage(formData: FormData) {
 
 export async function DeleteSite(formData: FormData) {
   const user = await requireUser();
-
+  const posts = await prisma.post.findMany({
+    where: {
+      userId: user?.id,
+      channelId: formData.get("siteId") as string,
+    },
+    select: {
+      image: true, // Get all images associated with posts in this channel
+    },
+  });
+  let images:string[]=[];
+  posts.map(post => {
+    const image = post?.image?post.image.substring(post.image.lastIndexOf("/") + 1):"";
+    images.push(image);
+  });
+  await deleteImageFromUploadthing(images);
   const data = await prisma.channel.delete({
     where: {
       userId: user?.id,
@@ -199,7 +270,6 @@ export async function CreateFreeSubscription() {
         role: "AUTHOR",
       }
     });
-  console.log(upd);
   return redirect("/dashboard");
 }
 export async function CreateSubscription() {

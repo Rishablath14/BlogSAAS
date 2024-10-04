@@ -32,15 +32,7 @@ export function UploadImageForm({ siteId }: iAppProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {imageUrl ? (
-          <Image
-            src={imageUrl}
-            alt="Uploaded Image"
-            width={200}
-            height={200}
-            className="size-[200px] object-cover rounded-lg"
-          />
-        ) : (
+        <div className="flex flex-col sm:flex-row items-center gap-4 border border-zinc-800 border-dashed rounded-lg">
           <UploadDropzone
             endpoint="imageUploader"
             onClientUploadComplete={(res) => {
@@ -51,7 +43,15 @@ export function UploadImageForm({ siteId }: iAppProps) {
               toast.error("Something went wrong.");
             }}
           />
-        )}
+          {imageUrl &&
+          <Image
+            src={imageUrl}
+            alt="Uploaded Image"
+            width={200}
+            height={200}
+            className="size-[200px] object-contain rounded-lg"
+            />}
+            </div>
       </CardContent>
       <CardFooter>
         <form action={UpdateImage}>

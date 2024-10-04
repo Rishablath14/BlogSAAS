@@ -12,7 +12,7 @@ import {
 import Defaultimage from "@/public/default.png";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ModeToggle } from "@/components/ThemeToggler";
+import { ArrowLeft } from "lucide-react";
 
 async function getData(subDir: string) {
   const data = await prisma.channel.findUnique({
@@ -21,6 +21,7 @@ async function getData(subDir: string) {
     },
     select: {
       name: true,
+      imageUrl: true,
       posts: {
         select: {
           smallDescription: true,
@@ -53,17 +54,18 @@ export default async function BlogIndexPage({
   const data = await getData(params.name);
   return (
     <>
-      <nav className="grid grid-cols-3 my-10">
+      <div className="grid grid-cols-3 my-10">
+        <Button asChild variant="outline" className="text-lg font-medium">
+          <Link href={"/blogs"} className="flex gap-2">
+          <ArrowLeft/>Go Back
+          </Link>
+        </Button>
         <div className="col-span-1" />
         <div className="flex items-center gap-x-4 justify-center">
-          <Image src={Logo} alt="Logo" width={40} height={40} />
-          <h1 className="text-3xl font-semibold tracking-tight">{data.name}</h1>
+          <Image src={data?.imageUrl ?? Logo} alt="logo" width={100} height={100} />
+          <h1 className="text-2xl md:text-4xl font-semibold tracking-tight">{data.name}</h1>
         </div>
-
-        <div className="col-span-1 flex w-full justify-end">
-          <ModeToggle />
-        </div>
-      </nav>
+      </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-7">
         {data.posts.map((item) => (

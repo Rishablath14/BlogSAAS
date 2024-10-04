@@ -36,7 +36,6 @@ export default async function PricingPage() {
 
   async function createCustomerPortal() {
     "use server";
-
     const session = await stripe.billingPortal.sessions.create({
       customer: data?.User?.customerId as string,
       return_url:

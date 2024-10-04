@@ -14,14 +14,20 @@ import BlockQuote from "@tiptap/extension-blockquote";
 import TextStyle from "@tiptap/extension-text-style";
 import CodeBlock from "@tiptap/extension-code-block";
 import OrderList from "@tiptap/extension-ordered-list";
+import TodoList from "@tiptap/extension-task-list";
+import TodoItems from "@tiptap/extension-task-item";
 import Bold from "@tiptap/extension-bold"; // Ajoutez cette ligne
 import HardBreak from "@tiptap/extension-hard-break"; // Ajoutez cette ligne
+import Image  from "@tiptap/extension-image";
+
 
 export function RenderArticle({ json }: { json: JSONContent }) {
   const outPut = useMemo(() => {
     return generateHTML(json, [
       Document,
       Paragraph,
+      TodoItems,
+      TodoList,
       Text,
       Link,
       Underline,
@@ -33,15 +39,17 @@ export function RenderArticle({ json }: { json: JSONContent }) {
       TextStyle,
       CodeBlock,
       OrderList,
+      Image,
       Bold, // Ajoutez cette ligne
       HardBreak, // Ajoutez cette ligne
     ]);
   }, [json]);
 
-  return (
-    <div
-      className="prose m-auto w-11/12 sm:prose-xl dark:prose-invert sm:w-2/3 prose-li:marker:text-primary"
+    return (
+      <div
+      style={{maxWidth: '100%'}}
+      className="prose w-full sm:prose-xl dark:prose-invert prose-li:marker:text-primary"
       dangerouslySetInnerHTML={{ __html: outPut }}
-    />
+      />
   );
 }

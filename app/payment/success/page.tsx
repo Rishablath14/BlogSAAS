@@ -15,7 +15,7 @@ export default function PaymentSucess() {
           <div className="mt-3 text-center sm:mt-5 w-full">
             <h2 className="text-xl font-semibold">Payment Successfull</h2>
             <p className="text-sm mt-2 text-muted-foreground tracking-tight">
-              Congrasts to your subscription. You can now create unlimted channels.
+              Congrasts to your subscription. You can now create unlimted channels and much more.
             </p>
 
             <Button asChild className="w-full mt-5">

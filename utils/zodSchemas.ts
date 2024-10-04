@@ -14,6 +14,7 @@ export const PostSchema = z.object({
   coverImage: z.string().min(1),
   smallDescription: z.string().min(1).max(200),
   articleContent: z.string().min(1),
+  content: z.string().optional(),
 });
 
 export function SiteCreationSchema(options?: {

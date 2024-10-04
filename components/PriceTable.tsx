@@ -25,7 +25,7 @@ export default async function PricingSection() {
   let data;
   if(user) {data = await getData(user?.id?user.id:"");}
   return (
-    <div>
+    <div className="px-2 sm:px-4 md:px-6 py-4 md:py-6">
       <PricingTable loggedIn={user!==null} role={user?.role?user.role:"READER"} status={data?.status === "active"} />
     </div>
   );

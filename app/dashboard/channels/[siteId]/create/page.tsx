@@ -1,7 +1,6 @@
 "use client";
 
-import { CreatePostAction } from "@/actions";
-import TailwindEditor from "@/app/components/dashboard/EditorWrapper";
+import { CreatePostAction, deleteImageFromUploadthing } from "@/actions";
 import { UploadDropzone } from "@/utils/UploadthingComponents";
 import { PostSchema } from "@/utils/zodSchemas";
 import { Button } from "@/components/ui/button";
@@ -24,14 +23,26 @@ import { JSONContent } from "novel";
 import { useActionState, useState } from "react";
 import { toast } from "sonner";
 import { SubmitButton } from "@/app/components/dashboard/SubmitButtons";
+import Editor from "@/app/components/dashboard/EditorWrapper";
+import { useUserInfo } from "@/components/AppContext";
 
 export default function ArticleCreationRoute({
   params,
 }: {
   params: { siteId: string };
 }) {
+  
   const [imageUrl, setImageUrl] = useState<string>("");
-  const [value, setValue] = useState<JSONContent | undefined>(undefined);
+  const {userInfo}:any = useUserInfo();
+  const [value, setValue] = useState<JSONContent | undefined>({
+    type: 'doc',
+    content: [
+      {
+        type: 'paragraph',
+        content: []
+      }
+    ]
+  });
   const [slug, setSlugValue] = useState<string>("");
   const [category, setCategoryValue] = useState<string>("");
   const [title, setTitle] = useState<string>("");
@@ -172,17 +183,12 @@ export default function ArticleCreationRoute({
                 defaultValue={fields.coverImage.initialValue}
                 value={imageUrl}
               />
-              {imageUrl ? (
-                <Image
-                  src={imageUrl}
-                  alt="Uploaded Image"
-                  className="object-cover w-[200px] h-[200px] rounded-lg"
-                  width={200}
-                  height={200}
-                />
-              ) : (
+              <div className="flex flex-col sm:flex-row items-center gap-4 border border-zinc-800 border-dashed rounded-lg">
+              
                 <UploadDropzone
+                className="flex-1"
                   onClientUploadComplete={(res) => {
+                    if(imageUrl) deleteImageFromUploadthing([imageUrl.substring(imageUrl.lastIndexOf("/") + 1)]);
                     setImageUrl(res[0].url);
                     toast.success("Image has been uploaded");
                   }}
@@ -190,14 +196,21 @@ export default function ArticleCreationRoute({
                   onUploadError={() => {
                     toast.error("Something went wrong...");
                   }}
+                  />
+                  {imageUrl &&
+                <Image
+                src={imageUrl}
+                  alt="Uploaded Image"
+                  className="object-contain flex-1 w-[200px] h-[250px] rounded-lg"
+                  width={200}
+                  height={200}
                 />
-              )}
-
+                }
+                </div>
               <p className="text-red-500 text-sm">{fields.coverImage.errors}</p>
             </div>
-
             <div className="grid gap-2">
-              <Label>Article Content</Label>
+              <Label>Article Content</Label> 
               <input
                 type="hidden"
                 name={fields.articleContent.name}
@@ -205,7 +218,17 @@ export default function ArticleCreationRoute({
                 defaultValue={fields.articleContent.initialValue}
                 value={JSON.stringify(value)}
               />
-              <TailwindEditor onChange={setValue} initialValue={value} />
+              {userInfo && userInfo.Subscription?.status === "active"?<>
+              <p className="text-sm text-gray-500">Press &apos; / &apos; to see the command lists</p>
+                <Editor onChange={setValue} initialValue={value} /> 
+              </>
+              :<Textarea
+              name={fields.content.name}
+              key={fields.content.key}
+              className="h-40"
+              placeholder="Write your blog content here..."
+              defaultValue={fields.content.initialValue}
+            />}
               <p className="text-red-500 text-sm">
                 {fields.articleContent.errors}
               </p>

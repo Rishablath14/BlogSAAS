@@ -35,7 +35,7 @@ export default function SettingsSiteRoute({
         <CardHeader>
           <CardTitle className="text-red-500">Danger</CardTitle>
           <CardDescription>
-            This will delete your site and all articles associated with it.
+            This will delete your Channel and all articles associated with it.
             Click the button below to delete everything
           </CardDescription>
         </CardHeader>

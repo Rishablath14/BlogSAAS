@@ -48,10 +48,10 @@ export default async function SitesRoute() {
 
       {data === undefined || data.length === 0 ? (
         <EmptyState
-          title="You dont have any Sites created"
-          description="You currently dont have any Sites. Please create some so that you can
+          title="You dont have any Channel created"
+          description="You currently dont have any Channel created. Please create some so that you can
         see them right here!"
-          buttonText="Create Site"
+          buttonText="Create Channel"
           href="/dashboard/channels/new"
         />
       ) : (

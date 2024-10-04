@@ -77,10 +77,10 @@ export default async function DashboardIndexPage() {
         </div>
       ) : (
         <EmptyState
-          title="You dont have any sites created"
-          description="You currently dont have any Sites. Please create some so that you can see them right here."
+          title="You dont have any channel created"
+          description="You currently dont have any Channel created. Please create some so that you can see them right here."
           href="/dashboard/channels/new"
-          buttonText="Create Site"
+          buttonText="Create Channel"
         />
       )}
 

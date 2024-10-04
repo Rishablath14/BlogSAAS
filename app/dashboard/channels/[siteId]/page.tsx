@@ -38,24 +38,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 async function getData(userId: string, siteId: string) {
-  /* const data = await prisma.post.findMany({
-    where: {
-      id: siteId,
-      userId: userId,
-    },
-    select: {
-      image: true,
-      title: true,
-      createdAt: true,
-      id: true,
-      Site: {
-        select: {
-          subdirectory: true,
-        },
-      },
-    },
-  }); */
-
+ 
   const data = await prisma.channel.findUnique({
     where: {
       id: siteId,

@@ -21,6 +21,21 @@ export const requireUserDB = async () => {
     where: {
       id: user.id,
     },
+    select: {
+      id: true,
+      firstName: true,
+      role: true,
+      lastName: true,
+      email: true,
+      customerId: true,
+      profileImage: true,
+      Subscription: {
+        select: {
+          status: true,
+        },
+      }
+    },
+
   });
 
   return dbUser;

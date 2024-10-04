@@ -27,7 +27,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold">
-              <Image src={Logo} alt='logo' width={200} height={200} className='dark:drop-shadow-[1px_0.5px_0.5px_gray]' />
+              <Image src={Logo} alt='logo' priority width={200} height={200} className='dark:drop-shadow-[1px_0.5px_0.5px_gray]' />
             </Link>
           </div>
           <div className="flex-1">
