@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/public/RLexiconLogo.svg";
@@ -15,10 +16,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ModeToggle } from "@/components/ThemeToggler";
-import { requireUserDB } from "@/utils/requireUser";
 import { CircleUser } from "lucide-react";
 import { User } from "@prisma/client";
-export function Hero({ user }: { user: User|null }) {
+import { useUserInfo } from "@/components/AppContext";
+export function Hero() {
+  const {userInfo}:any = useUserInfo();
   return (
     <>
       <div className="fixed backdrop-blur-md z-50 flex w-full xl:w-[90%] 2xl:w-[85%] px-2 sm:px-4 md:px-6 mx-auto items-center justify-between">
@@ -55,7 +57,7 @@ export function Hero({ user }: { user: User|null }) {
         </ul>
         <div className="flex justify-end space-x-4">
           <ModeToggle />
-          {user===null ? (
+          {userInfo===null ? (
             <>
               <LoginLink>
                 <Button className="font-light">Signin / Signup</Button>
@@ -69,9 +71,9 @@ export function Hero({ user }: { user: User|null }) {
                   size="icon"
                   className="rounded-full"
                 >
-                  {user?.profileImage ? (
+                  {userInfo?.profileImage ? (
                     <Image
-                      src={user.profileImage}
+                      src={userInfo.profileImage}
                       alt="logo"
                       width={50}
                       height={50}
@@ -87,7 +89,7 @@ export function Hero({ user }: { user: User|null }) {
                   <LogoutLink className="bg-destructive mt-1 cursor-pointer">Log out</LogoutLink>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                { user?.role !== "READER" &&
+                { userInfo?.role !== "READER" &&
               <Link href="/dashboard" className="hover:underline mt-2 cursor-pointer bg-primary text-primary-foreground p-2 rounded-[10px]">
                 Dashboard
               </Link>

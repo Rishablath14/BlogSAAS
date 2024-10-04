@@ -9,10 +9,9 @@ import { requireUserDB } from "@/utils/requireUser";
 
 
 export default async function Home() {
-    const user = await requireUserDB();  
     return (
     <div className="max-w-7xl mx-auto">
-      <Hero user={user}/>
+      <Hero/>
       <AboutSection/>
       <PricingSection/>
       <ContactSection/>
