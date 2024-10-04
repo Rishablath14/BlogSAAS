@@ -2,7 +2,6 @@ import jwksClient from "jwks-rsa";
 import jwt from "jsonwebtoken";
 import type { JwtPayload } from "jsonwebtoken";
 import prisma from "@/utils/db";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextResponse } from "next/server";
 
 const client = jwksClient({
@@ -34,12 +33,18 @@ export async function POST(req: Request) {
 
     // Handle various events
     switch (event?.type) {
-      case "user.created":
+      case "user.authenticated":
         // create a user in our database
         const user = event.data.user;
         console.log(event.data);
-        if (!user || user === null || !user.id) throw new Error("Something went wrong");         
-         await prisma.user.create({
+        let dbUser = await prisma.user.findUnique({
+            where: {
+              id: user.id,
+            },
+          });
+        
+          if (!dbUser) {
+         dbUser = await prisma.user.create({
               data: {
                 id: user.id,
                 firstName: user.first_name ?? "",
@@ -47,9 +52,10 @@ export async function POST(req: Request) {
                 email: user.email ?? "",
                 customerId: "",
                 profileImage:
-                  user.picture ?? `https://avatar.vercel.sh/${user.given_name}`,
+                  user.picture ?? "https://rlexicon.vercel.app/user.png",
               },
             });
+        }
         break;
       default:
         console.log("event not handled", event.type);
