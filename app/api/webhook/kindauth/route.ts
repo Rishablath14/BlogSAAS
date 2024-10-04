@@ -37,6 +37,7 @@ export async function POST(req: Request) {
       case "user.created":
         // create a user in our database
         const user = event.data.user;
+        console.log(user);
         if (!user || user === null || !user.id) throw new Error("Something went wrong");         
          await prisma.user.create({
               data: {
