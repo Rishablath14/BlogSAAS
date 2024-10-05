@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { JsonValue } from '@prisma/client/runtime/library'
-import { CalendarIcon, CircleUser, ClockIcon,AppWindowMac,ShareIcon, UserIcon } from 'lucide-react'
+import { CalendarIcon, CircleUser, ClockIcon,AppWindowMac,ShareIcon, UserIcon, Trash2Icon } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 import { RenderArticle } from './dashboard/RenderArticle'
@@ -12,7 +12,7 @@ import { useParams} from 'next/navigation'
 import { useUserInfo } from '@/components/AppContext'
 import Link from 'next/link'
 import { toast } from 'sonner'
-import { createComment } from '@/actions'
+import { createComment, deleteComment} from '@/actions'
 import { useRouter } from 'next/navigation'
 type data = {
     title: string;
@@ -54,15 +54,26 @@ const Blog = ({ blog,comments } : {blog:data,comments:comment[]}) => {
   const params = useParams();
   const router = useRouter();
   const [userComment, setUserComment] = React.useState<string>("");
+  const [loading, setLoading] = React.useState(false);
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
   
   const addComment = async () => {
     if(userComment.trim().length > 0) {
+      setLoading(true);
       await createComment(userComment, slug, userInfo.id);
       toast.success("Comment added successfully");
       setUserComment("");
+      setLoading(false);
       router.refresh();      
     }}
+  const deleteUserComment = async (id:string) => {
+    const confm = window.confirm("Are you sure you want to delete this comment?");
+    if(confm) {
+      await deleteComment(id);
+      toast.success("Comment deleted successfully");
+      router.refresh();
+    }
+  }  
   return (
     <div>
         <article className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg overflow-hidden">
@@ -130,6 +141,7 @@ const Blog = ({ blog,comments } : {blog:data,comments:comment[]}) => {
             {/* Another Comment */}
             {comments.map((comment:any) => (
               <div className="flex space-x-4 items-center" key={comment.id}>
+               {userInfo?.email === comment?.User?.email && <div onClick={() => deleteUserComment(comment?.id)}><Trash2Icon color='red' className="w-5 h-5" /></div>}
               {comment?.User?.profileImage ? <Image
                       src={comment?.User?.profileImage}
                       alt="logo"
@@ -138,8 +150,8 @@ const Blog = ({ blog,comments } : {blog:data,comments:comment[]}) => {
                       className="rounded-full w-auto h-auto"
                     />:<CircleUser className="h-5 w-5" />}
               <div>
-                <span>{comment?.createdAt.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
-                <p className="text-xs sm:text-sm font-semibold">{comment?.User?.firstName + " " + comment?.User?.lastName + " <"+comment?.User?.email+">"}</p>
+                <span className='text-xs'>{comment?.createdAt.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric"})}</span>
+                <p className="text-xs font-semibold">{comment?.User?.firstName + " " + comment?.User?.lastName + " <"+comment?.User?.email+">"}</p>
                 <p className=" mt-1 text-gray-800 dark:text-gray-200 text-sm">{comment?.desc}</p>
               </div>
             </div>
@@ -155,8 +167,8 @@ const Blog = ({ blog,comments } : {blog:data,comments:comment[]}) => {
              ?<Button className="w-full sm:w-auto bg-orange-600  hover:bg-orange-700 transition-colors duration-200" disabled>
              Login to Comment
            </Button>
-             :<Button onClick={addComment} type="submit" className="w-full sm:w-auto bg-orange-600  hover:bg-orange-700 transition-colors duration-200">
-              Post Comment
+             :<Button disabled={loading} onClick={addComment} type="submit" className="w-full sm:w-auto bg-orange-600  hover:bg-orange-700 transition-colors duration-200">
+              {loading?"Posting...":"Post Comment"}
             </Button>
             }
           </div>

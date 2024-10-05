@@ -114,6 +114,19 @@ export async function createComment(comment: string,slug:string,id:string) {
   })
   return true;
 }
+export async function deleteComment(cid:string) {
+  try{
+    await prisma.comment.delete({
+    where: {
+      id: cid,
+    }
+  })
+  return true;
+}catch(e){
+  console.log(e);
+  return false;
+  }
+}
 export async function CreatePostAction(prevState: any, formData: FormData) {
   const user = await requireUser();
 
