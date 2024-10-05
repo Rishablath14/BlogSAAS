@@ -3,15 +3,18 @@ import Image from 'next/image'
 import logo from '@/public/RLexiconLogo.svg'
 import React from 'react'
 import { ModeToggle } from './ThemeToggler'
-import { LoginLink, LogoutLink } from '@kinde-oss/kinde-auth-nextjs/server'
+import { LoginLink,LogoutLink } from '@kinde-oss/kinde-auth-nextjs'
 import Link from 'next/link'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
 import { Button } from './ui/button'
 import { CircleUser } from 'lucide-react'
 import { useUserInfo } from './AppContext'
+import { usePathname } from 'next/navigation'
 
 const Navbar = () => {
   const {userInfo}:any = useUserInfo();
+  const path = usePathname();
+  
   return (
     <div className="fixed backdrop-blur-md shadow-md z-50 flex w-full px-2 sm:px-4 md:px-6 mx-auto items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
@@ -20,7 +23,7 @@ const Navbar = () => {
             alt="logo"
             width={200}
             height={200}
-            className="dark:drop-shadow-[1px_0.5px_0.5px_white]"
+            className="w-[150px] sm:w-[200px]  dark:drop-shadow-[1px_0.5px_0.5px_white]"
           />
         </Link>
         <ul className="hidden md:flex items-center gap-4 md:gap-6 justify-center ">
@@ -49,8 +52,8 @@ const Navbar = () => {
           <ModeToggle />
           {userInfo===null ? (
             <>
-              <LoginLink>
-                <Button className="font-light">Signin / Signup</Button>
+              <LoginLink postLoginRedirectURL={"/api/auth/creation" + `${path==="/"?"/none":"/"+path.slice(1).replaceAll("/","(")}`}>
+                <Button className="font-light">Login</Button>
               </LoginLink>
             </>
           ) : (
@@ -61,7 +64,7 @@ const Navbar = () => {
                   size="icon"
                   className="rounded-full"
                 >
-                  {userInfo?.profileImage ? (
+                  {userInfo && userInfo?.profileImage ? (
                     <Image
                       src={userInfo.profileImage}
                       alt="logo"
@@ -79,7 +82,7 @@ const Navbar = () => {
                   <LogoutLink className="bg-destructive mt-1 cursor-pointer">Log out</LogoutLink>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                {userInfo?.role !== "READER" &&
+                {userInfo && userInfo?.role !== "READER" &&
               <Link href="/dashboard" className="hover:underline mt-2 cursor-pointer bg-primary text-primary-foreground p-2 rounded-[10px]">
                 Dashboard
               </Link>

@@ -17,8 +17,11 @@ import OrderList from "@tiptap/extension-ordered-list";
 import TodoList from "@tiptap/extension-task-list";
 import TodoItems from "@tiptap/extension-task-item";
 import Bold from "@tiptap/extension-bold"; // Ajoutez cette ligne
+import Italic from "@tiptap/extension-italic";
 import HardBreak from "@tiptap/extension-hard-break"; // Ajoutez cette ligne
 import Image  from "@tiptap/extension-image";
+import { Color } from "@tiptap/extension-color";
+
 
 
 export function RenderArticle({ json }: { json: JSONContent }) {
@@ -40,6 +43,8 @@ export function RenderArticle({ json }: { json: JSONContent }) {
       CodeBlock,
       OrderList,
       Image,
+      Italic,
+      Color,
       Bold, // Ajoutez cette ligne
       HardBreak, // Ajoutez cette ligne
     ]);

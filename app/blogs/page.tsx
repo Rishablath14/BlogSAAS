@@ -37,9 +37,10 @@ const blogs = async ()=>{
 }
 const page = async ({ searchParams }: { searchParams: { page: string } }) => {
   const page = parseInt(searchParams.page) || 1;
+  const data = await prisma.category.findMany();
   const posts = await blogs();
   return (
-   <BlogApplication blogs={posts}/>
+   <BlogApplication blogs={posts} categories={data}/>
   )
 }
 

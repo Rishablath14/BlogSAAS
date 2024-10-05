@@ -50,6 +50,7 @@ async function getData(userId: string, siteId: string) {
         select: {
           image: true,
           title: true,
+          slug: true,
           createdAt: true,
           id: true,
         },
@@ -166,6 +167,13 @@ export default async function SiteIdRoute({
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuSeparator />
+                            <DropdownMenuItem asChild>
+                              <Link
+                                href={`/blog/${data?.subdirectory}/${item.slug}`}
+                              >
+                                View
+                              </Link>
+                            </DropdownMenuItem>
                             <DropdownMenuItem asChild>
                               <Link
                                 href={`/dashboard/channels/${params.siteId}/${item.id}`}

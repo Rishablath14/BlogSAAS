@@ -1,29 +1,11 @@
-"use client"
 import Image from "next/image";
 import Link from "next/link";
-import Logo from "@/public/RLexiconLogo.svg";
-import {
-  LoginLink,
-  LogoutLink,
-  RegisterLink,
-} from "@kinde-oss/kinde-auth-nextjs/components";
 import { Button } from "@/components/ui/button";
 import HeroImage from "@/public/home.png";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ModeToggle } from "@/components/ThemeToggler";
-import { CircleUser } from "lucide-react";
-import { User } from "@prisma/client";
-import { useUserInfo } from "@/components/AppContext";
 export function Hero() {
-  const {userInfo}:any = useUserInfo();
   return (
     <>
-      <div className="fixed backdrop-blur-md z-50 flex w-full xl:w-[90%] 2xl:w-[85%] px-2 sm:px-4 md:px-6 mx-auto items-center justify-between">
+      {/* <div className="fixed backdrop-blur-md z-50 flex w-full xl:w-[90%] 2xl:w-[85%] px-2 sm:px-4 md:px-6 mx-auto items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <Image
             src={Logo}
@@ -99,7 +81,7 @@ export function Hero() {
             </DropdownMenu>
           )}
         </div>
-      </div>
+      </div> */}
 
       <section
         className="relative pt-20 flex items-center px-2 sm:px-4 md:px-6 justify-center"

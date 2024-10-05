@@ -104,6 +104,16 @@ export async function CreateSiteAction(prevState: any, formData: FormData) {
     return redirect("/dashboard/channels");
   }
 }
+export async function createComment(comment: string,slug:string,id:string) {
+  await prisma.comment.create({
+    data: {
+      desc: comment ?? "", // Ensure desc is inside the data property
+      userId: id,
+      postSlug: slug,
+    },
+  })
+  return true;
+}
 export async function CreatePostAction(prevState: any, formData: FormData) {
   const user = await requireUser();
 
@@ -175,6 +185,16 @@ export async function EditPostActions(prevState: any, formData: FormData) {
     type: "doc",
     content: paragraphs,
   };}
+  const prevContent = await prisma.post.findUnique({
+    where: {
+      userId: user?.id,
+      id: formData.get("articleId") as string,
+    },
+    select:{
+      content:true
+    }
+  });
+
   const data = await prisma.post.update({
     where: {
       userId: user?.id,
@@ -185,7 +205,7 @@ export async function EditPostActions(prevState: any, formData: FormData) {
       smallDescription: submission.value.smallDescription,
       slug: submission.value.slug,
       content: submission.value.content?submission.value.content:"",
-      articleContent: submission?.value?.content && submission?.value?.content.trim() ?dataContent:JSON.parse(submission.value.articleContent),
+      articleContent: submission?.value?.content && submission?.value?.content.trim() && prevContent?.content !== submission.value.content?dataContent:JSON.parse(submission.value.articleContent),
       image: submission.value.coverImage,
       catSlug:submission.value.category,
     },
@@ -274,7 +294,7 @@ export async function CreateFreeSubscription() {
 }
 export async function CreateSubscription() {
   const user = await requireUser();
-
+  
   let stripeUserId = await prisma.user.findUnique({
     where: {
       id: user?.id,
@@ -301,7 +321,14 @@ export async function CreateSubscription() {
       },
     });
   }
-
+  await prisma.user.update({
+    where: {
+      id: user?.id
+    },
+    data: {
+      role: "AUTHOR",
+    }
+  });
   const session = await stripe.checkout.sessions.create({
     customer: stripeUserId.customerId as string,
     mode: "subscription",

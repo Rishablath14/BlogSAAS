@@ -2,15 +2,14 @@ import prisma from "@/utils/db";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: Request) {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
 
   if (!user || user === null || !user.id) {
     throw new Error("Something went wrong");
   }
-  console.log("aagya");
-  
+    
   let dbUser = await prisma.user.findUnique({
     where: {
       id: user.id,
@@ -26,14 +25,17 @@ export async function GET() {
         email: user.email ?? "",
         customerId: "",
         profileImage:
-          user.picture ?? `https://avatar.vercel.sh/${user.given_name}`,
+          user.picture ?? `https://rlexicon.vercel.app/media/user.png`,
       },
     });
   }
-
+  
+  const url = req.url.split("auth/creation")[1]==="/none" ? "": req.url.split("auth/creation")[1].replaceAll("(","/");
+  console.log(url);
+  
   return NextResponse.redirect(
     process.env.NODE_ENV === "production"
-      ? "https://rlexicon.vercel.app"
-      : "http://localhost:3000"
+      ? "https://rlexicon.vercel.app"+url
+      : "http://localhost:3000"+url
   );
 }

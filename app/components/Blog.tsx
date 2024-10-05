@@ -2,17 +2,18 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Post } from '@prisma/client'
 import { JsonValue } from '@prisma/client/runtime/library'
-import { CalendarIcon, CircleUser, ClockIcon, ShareIcon, UserIcon } from 'lucide-react'
+import { CalendarIcon, CircleUser, ClockIcon,AppWindowMac,ShareIcon, UserIcon } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 import { RenderArticle } from './dashboard/RenderArticle'
 import { JSONContent } from 'novel'
-import { KindeUser } from '@kinde-oss/kinde-auth-nextjs/types'
-import { LoginLink } from '@kinde-oss/kinde-auth-nextjs/components'
 import { useParams} from 'next/navigation'
 import { useUserInfo } from '@/components/AppContext'
+import Link from 'next/link'
+import { toast } from 'sonner'
+import { createComment } from '@/actions'
+import { useRouter } from 'next/navigation'
 type data = {
     title: string;
     articleContent: JsonValue;
@@ -37,9 +38,31 @@ type data = {
         } | null;
     }[]
 } | null
-const Blog = ({ blog } : {blog:data}) => {
+type comment = {
+  id: string;
+    createdAt: Date;
+    desc: string;
+    User: {
+        email: string;
+        firstName: string;
+        lastName: string;
+        profileImage: string;
+    } | null;
+}
+const Blog = ({ blog,comments } : {blog:data,comments:comment[]}) => {
   const {userInfo}:any = useUserInfo();
   const params = useParams();
+  const router = useRouter();
+  const [userComment, setUserComment] = React.useState<string>("");
+  const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
+  
+  const addComment = async () => {
+    if(userComment.trim().length > 0) {
+      await createComment(userComment, slug, userInfo.id);
+      toast.success("Comment added successfully");
+      setUserComment("");
+      router.refresh();      
+    }}
   return (
     <div>
         <article className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg overflow-hidden">
@@ -78,8 +101,21 @@ const Blog = ({ blog } : {blog:data}) => {
         {/* Interactive Elements */}
         <div className="mt-8 flex justify-end items-center">
           <div className="flex space-x-4">
+            <Link
+              href={`/blog/${params.name}`}
+              className="flex items-center space-x-2 px-4 py-2 rounded-full bg-gray-100 text-gray-600 hover:text-primary transition-all"
+            >
+              <AppWindowMac className="w-5 h-5" />
+              <span>View Channel</span>
+            </Link>
             <button
-              className="flex items-center space-x-2 px-4 py-2 rounded-full bg-gray-100 text-gray-600"
+            onClick={() => { window.open(
+              `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(
+                blog?.title??""
+              )}&summary=${encodeURIComponent(blog?.smallDescription??"")}`,
+              '_blank',
+            );}}
+              className="flex items-center space-x-2 px-4 py-2 rounded-full bg-gray-100 text-gray-600 hover:text-primary transition-all"
             >
               <ShareIcon className="w-5 h-5" />
               <span>Share</span>
@@ -92,37 +128,38 @@ const Blog = ({ blog } : {blog:data}) => {
           <h2 className="text-2xl font-bold mb-6">Comments</h2>
           <div className="space-y-6 mb-8">
             {/* Another Comment */}
-            <div className="flex space-x-4 items-center">
-              {blog?.comments[0]?.User?.profileImage ? <Image
-                      src={blog?.comments[0]?.User?.profileImage}
+            {comments.map((comment:any) => (
+              <div className="flex space-x-4 items-center" key={comment.id}>
+              {comment?.User?.profileImage ? <Image
+                      src={comment?.User?.profileImage}
                       alt="logo"
                       width={50}
                       height={50}
                       className="rounded-full w-auto h-auto"
                     />:<CircleUser className="h-5 w-5" />}
               <div>
-                <p className="font-semibold">Alex Johnson</p>
-                <p className=" mt-1 text-gray-400 text-sm">WebAssembly is definitely a game-changer. I&apos;ve been experimenting with it in some of my projects, and the performance.</p>
+                <span>{comment?.createdAt.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
+                <p className="text-xs sm:text-sm font-semibold">{comment?.User?.firstName + " " + comment?.User?.lastName + " <"+comment?.User?.email+">"}</p>
+                <p className=" mt-1 text-gray-800 dark:text-gray-200 text-sm">{comment?.desc}</p>
               </div>
             </div>
+            ))}
           </div>
           {/* Comment Form */}
-          <form className="space-y-4">
+          <div className="space-y-4">
             <div>
               <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-1">Leave a comment</label>
-              <Textarea id="comment" placeholder="Share your thoughts..." className="w-full p-2 border rounded" />
+              <Textarea id="comment" placeholder="Share your thoughts..." value={userComment} onChange={(e) => setUserComment(e.target.value)} className="w-full p-2 border rounded" />
             </div>
             {userInfo===null
-             ?<Button className="w-full sm:w-auto bg-orange-600  hover:bg-orange-700 transition-colors duration-200" asChild>
-             <LoginLink postLoginRedirectURL={`/blog/${params?.name}/${params?.slug}`}>
+             ?<Button className="w-full sm:w-auto bg-orange-600  hover:bg-orange-700 transition-colors duration-200" disabled>
              Login to Comment
-              </LoginLink> 
            </Button>
-             :<Button type="submit" className="w-full sm:w-auto bg-orange-600  hover:bg-orange-700 transition-colors duration-200">
+             :<Button onClick={addComment} type="submit" className="w-full sm:w-auto bg-orange-600  hover:bg-orange-700 transition-colors duration-200">
               Post Comment
             </Button>
             }
-          </form>
+          </div>
         </section>
     </div>
 

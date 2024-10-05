@@ -23,9 +23,11 @@ export function SiteCreationSchema(options?: {
   return z.object({
     subdirectory: z
       .string()
-      .min(1)
-      .max(40)
-      .regex(/^[a-z]+$/, "Subdirectory must only use lowercase letters.")
+      .min(1, "Subdirectory cannot be empty.")  // Minimum length validation
+      .max(40, "Subdirectory cannot be longer than 40 characters.") // Maximum length validation
+      .regex(/^[a-z]+(-[a-z]+)*$/, "Subdirectory must only use lowercase letters and can be separated by single '-' without consecutive dashes.")
+      .transform((value) => value.trim()) // Remove leading and trailing spaces
+      .transform((value) => value.replace(/\s+/g, '-')) // Replace spaces with dashes
       .transform((value) => value.toLocaleLowerCase())
       .pipe(
         z.string().superRefine((email, ctx) => {

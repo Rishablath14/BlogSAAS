@@ -57,6 +57,27 @@ export default async function SlugRoute({
   params: { slug: string; name: string };
 }) {
   const data = await getData(params.slug);
+  const comments = await prisma.comment.findMany({
+    where: {
+      postSlug: params.slug
+    },
+    orderBy: {
+      createdAt: 'desc'
+    },
+    select: {
+      id: true,
+      desc: true,
+      createdAt: true,
+      User: {
+        select: {
+          email: true,
+          firstName: true,
+          lastName: true,
+          profileImage: true,
+        }
+      }
+    }
+  })
   return (
     <>
       <div className="flex items-center gap-x-3 pt-10 pb-5">
@@ -67,7 +88,7 @@ export default async function SlugRoute({
         </Button>
         <span className="text-xl font-medium">Go Back</span>
       </div>
-      <Blog blog={data}/>
+      <Blog blog={data} comments={comments}/>
     </>
   );
 }
