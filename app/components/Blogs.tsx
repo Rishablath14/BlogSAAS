@@ -1,28 +1,37 @@
 "use client"
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Calendar, Search, X, User, ChevronRight } from 'lucide-react'
 import { Category } from '@prisma/client'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Input } from '@/components/ui/input'
 
-const blogPosts = [
-  { id: 1, title: 'The Future of Web Development', category: 'Web Development', excerpt: 'Explore the cutting-edge technologies shaping the future of web development.', author: 'John Doe', date: '2023-05-15', likes: 120, comments: 15, image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2072&q=80' },
-  { id: 2, title: 'Mastering Responsive Design', category: 'CSS', excerpt: 'Learn the secrets to creating truly responsive and adaptive web layouts.', author: 'Jane Smith', date: '2023-05-12', likes: 95, comments: 8, image: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2055&q=80' },
-  { id: 3, title: 'The Power of React Hooks', category: 'React', excerpt: 'Dive deep into React Hooks and revolutionize your component logic.', author: 'Alex Johnson', date: '2023-05-10', likes: 150, comments: 22, image: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80' },
-  { id: 4, title: 'Optimizing Web Performance', category: 'Performance', excerpt: 'Discover techniques to significantly boost your website\'s speed and efficiency.', author: 'Emily Brown', date: '2023-05-08', likes: 88, comments: 10, image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2015&q=80' },
-  { id: 5, title: 'The Art of Clean Code', category: 'Best Practices', excerpt: 'Learn how to write clean, maintainable, and efficient code.', author: 'Chris Wilson', date: '2023-05-05', likes: 132, comments: 18, image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80' },
-]
+function useDebounce(value: string, delay = 300) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
 
-const allCategories = ['All', ...new Set(blogPosts.map(post => post.category))]
+  useEffect(() => {
+    // Set up a timer
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
 
+    // Clean up the timer on component unmount or when value/delay changes
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 export default function BlogApplication({blogs,categories}: {blogs: any, categories: Category[]}) {
-  const topBlogs = blogs.sort((a:{createdAt: Date}, b:{createdAt: Date}) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, 3);
+  const topBlogs = blogs.sort((a:{views:number}, b:{ views: number }) => b.views - a.views).slice(0, 3);
   const [selectedCategory, setSelectedCategory] = useState('All');
-
-  const filteredPosts = selectedCategory === 'All' 
-    ? blogs
-    : blogs.filter((post: { catSlug: string }) => post.catSlug === selectedCategory)
+  const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const filteredPosts = selectedCategory === 'All'
+    ? blogs.filter((post: { title: string }) => post.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase()))
+    : blogs.filter((post: { catSlug: string }) => post.catSlug === selectedCategory).filter((post: { title: string }) => post.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase()));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 dark:from-zinc-950 dark:to-zinc-900 text-gray-800 font-sans pb-8">
@@ -53,10 +62,12 @@ export default function BlogApplication({blogs,categories}: {blogs: any, categor
         <main className="w-full lg:w-2/3">
           <div className="mb-8">
             <div className="relative">
-              <input
+              <Input
                 type="text"
                 placeholder="Search posts..."
-                className="w-full p-3 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-300"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full p-3 pl-10 border border-gray-300 rounded-full focus:outline-none dark:text-white focus:ring-2 focus:ring-orange-500 transition-all duration-300"
               />
               <Search className="absolute left-3 top-3 text-gray-400" size={20} />
             </div>
@@ -98,7 +109,7 @@ export default function BlogApplication({blogs,categories}: {blogs: any, categor
         {/* Side section for top blogs */}
         <aside className="w-full lg:w-1/3">
           <div className="p-6 rounded-lg shadow-md dark:shadow-gray-600">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">Top Blogs</h2>
+            <h2 className="text-2xl font-bold mb-4 text-primary">Top Blogs</h2>
             <div className="space-y-4">
               {topBlogs.map((blog:{
               id: number,

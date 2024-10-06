@@ -1,11 +1,17 @@
+"use client"
 import Image from 'next/image'
 import React from 'react'
 import logo from '@/public/RLexiconLogo.svg'
 import Link from 'next/link'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 
 const Footer = () => {
+  const handleSubscribe=(e:React.FormEvent)=>{
+    e.preventDefault();
+    toast.info('Thankyou for showing interst in subscribing to our newsletter will start it soon. stay tuned for more updates!');
+  }
   return (
     <>
     <section id="contact" className="py-4">
@@ -48,21 +54,21 @@ const Footer = () => {
                   </p>
                 </div>
                 <div className="mt-9">
-                  <form className="sm:flex">
+                  <form onSubmit={handleSubscribe} className="sm:flex">
                     <Input
                       type="email"
                       placeholder="Enter your email"
                       className="w-full px-5 py-3 placeholder-gray-500 focus:ring-orange-500 focus:border-orange-500 sm:max-w-xs border-gray-300 rounded-md"
                     />
                     <div className="mt-3 rounded-md shadow sm:mt-0 sm:ml-3 sm:flex-shrink-0">
-                      <Button type="submit" className="w-full flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                      <Button type='submit' className="w-full flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
                         Subscribe
                       </Button>
                     </div>
                   </form>
                   <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
                     We care about your data. Read our{' '}
-                    <Link href="privacypolicy" className="font-medium text-orange-500 hover:text-orange-400">
+                    <Link href="/privacypolicy" className="font-medium text-orange-500 hover:text-orange-400">
                       Privacy Policy
                     </Link>.
                   </p>
@@ -75,7 +81,7 @@ const Footer = () => {
     <div className="w-full max-w-screen-xl mx-auto p-4 md:py-4">
         <div className="sm:flex sm:items-center sm:justify-between">
             <Image src={logo} alt='logo' width={200} height={200} className='dark:drop-shadow-[1px_0.5px_0.5px_white]' />
-            <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
+            <ul className="flex flex-wrap items-center mb-2 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
             <li>
                     <Link href="/" className="hover:underline me-4 md:me-6">Home</Link>
                 </li>
@@ -90,7 +96,7 @@ const Footer = () => {
                 </li>
             </ul>
         </div>
-        <hr className="my-2 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+        <hr className="my-2 border-gray-200 sm:mx-auto dark:border-gray-700" />
         <div className='w-full flex-col sm:flex-row flex justify-around items-center gap-1'>
         <p className="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2024 <Link href="/" className="hover:underline">RLexicon™</Link>. All Rights Reserved.</p>
         <p className="text-sm text-gray-500 sm:text-center dark:text-gray-400">Made By <Link href="https://rishablathportfolio.netlify.app/" target='_blank' className="hover:underline">Rishab Lath</Link></p>

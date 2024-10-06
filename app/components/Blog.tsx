@@ -5,20 +5,22 @@ import { Textarea } from '@/components/ui/textarea'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { CalendarIcon, CircleUser, ClockIcon,AppWindowMac,ShareIcon, UserIcon, Trash2Icon } from 'lucide-react'
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { RenderArticle } from './dashboard/RenderArticle'
 import { JSONContent } from 'novel'
 import { useParams} from 'next/navigation'
 import { useUserInfo } from '@/components/AppContext'
 import Link from 'next/link'
 import { toast } from 'sonner'
-import { createComment, deleteComment} from '@/actions'
+import { addViewPostAction, createComment, deleteComment} from '@/actions'
 import { useRouter } from 'next/navigation'
 type data = {
+    id: string;
     title: string;
     articleContent: JsonValue;
     smallDescription: string;
     image: string;
+    updatedAt: Date;
     createdAt: Date;
     catSlug: string;
     User: {
@@ -56,6 +58,10 @@ const Blog = ({ blog,comments } : {blog:data,comments:comment[]}) => {
   const [userComment, setUserComment] = React.useState<string>("");
   const [loading, setLoading] = React.useState(false);
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
+
+  useEffect(() => {
+   addViewPostAction(blog?.id ?? "");
+  },[])
   
   const addComment = async () => {
     if(userComment.trim().length > 0) {

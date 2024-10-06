@@ -63,6 +63,7 @@ export async function CreateSiteAction(prevState: any, formData: FormData) {
         data: {
           description: submission.value.description,
           name: submission.value.name,
+          imageUrl: submission.value.imageUrl,
           subdirectory: submission.value.subdirectory,
           userId: user?.id,
         },
@@ -170,7 +171,18 @@ export async function CreatePostAction(prevState: any, formData: FormData) {
 
   return redirect(`/dashboard/channels/${formData.get("siteId")}`);
 }
-
+export async function addViewPostAction(postid:string) {
+  await prisma.post.update({
+    where: {
+      id: postid,
+    },
+    data: {
+      views: {
+        increment: 1,
+      },
+    },
+  })  
+}
 export async function EditPostActions(prevState: any, formData: FormData) {
   const user = await requireUser();
 

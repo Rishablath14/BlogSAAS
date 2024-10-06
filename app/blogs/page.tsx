@@ -1,5 +1,3 @@
-import CategoryList from '@/components/CategoryList';
-import Featured from '@/components/Featured';
 import React from 'react'
 import BlogApplication from '../components/Blogs';
 import prisma from '@/utils/db';
@@ -12,6 +10,7 @@ const blogs = async ()=>{
       slug: true,
       image: true,
       title: true,
+      views: true,
       smallDescription: true,
       catSlug: true,
       User: {
@@ -39,7 +38,7 @@ const page = async ({ searchParams }: { searchParams: { page: string } }) => {
   const page = parseInt(searchParams.page) || 1;
   const data = await prisma.category.findMany();
   const posts = await blogs();
-  return (
+  return ( 
    <BlogApplication blogs={posts} categories={data}/>
   )
 }

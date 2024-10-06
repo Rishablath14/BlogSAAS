@@ -38,7 +38,16 @@ export default async function DashboardLayout({ children }: { children: ReactNod
         </div>
       </div>
       <div className="flex flex-col">
-        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+        <header className="flex backdrop-blur-md md:backdrop-blur-none fixed md:relative w-full h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+        <Link href="/" className="flex md:hidden items-center gap-2">
+          <Image
+            src={Logo}
+            alt="logo"
+            width={200}
+            height={200}
+            className="w-[150px] sm:w-[200px]  dark:drop-shadow-[1px_0.5px_0.5px_white]"
+          />
+        </Link>
           <div className="ml-auto flex items-center gap-x-5">
             <ModeToggle />
             <DropdownMenu>
@@ -57,9 +66,10 @@ export default async function DashboardLayout({ children }: { children: ReactNod
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            <DashboardLinks mobile/>
           </div>
         </header>
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+        <main className="flex flex-1 pt-20 md:pt-4 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           {children}
         </main>
       </div>
