@@ -30,10 +30,10 @@ const data = await prisma.post.findMany({
 }
 export default async function sitemap() {
   let blogs = await getData();
-  blogs.map((post) => ({
+  let blogurls = blogs.map((post) => ({
     url: `${baseUrl}/blog/${post?.Channel?.subdirectory}/${post?.slug}`,
     lastModified: post.createdAt.toISOString().split("T")[0],
   }));
 
-  return [...blogs];
+  return [...blogurls];
 }
