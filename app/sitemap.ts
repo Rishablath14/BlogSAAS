@@ -33,6 +33,7 @@ export default async function sitemap() {
   let blogurls = blogs.map((post) => ({
     url: `${baseUrl}/blog/${post?.Channel?.subdirectory}/${post?.slug}`,
     lastModified: post.createdAt.toISOString().split("T")[0],
+    priority: 1,
   }));
 
   return [...blogurls];

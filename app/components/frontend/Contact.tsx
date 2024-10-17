@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
-import ContactImage from "@/public/home.png";
+import ContactImage from "@/public/contact.jpg";
 
 export default function ContactSection() {
   return (

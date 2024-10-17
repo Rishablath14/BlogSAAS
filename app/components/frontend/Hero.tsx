@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import HeroImage from "@/public/home.png";
+import HeroImage from "@/public/home1.png";
 import { Cover } from "@/components/ui/cover";
 export function Hero() {
   return (

@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import AboutImage from "@/public/home.png";
+import AboutImage from "@/public/about.jpg";
 
 export function AboutSection() {
   return (
