@@ -23,8 +23,9 @@ import { toast } from "sonner";
 import { SubmitButton } from "@/app/components/dashboard/SubmitButtons";
 import Editor from "@/app/components/dashboard/EditorWrapper";
 import { useUserInfo } from "@/components/AppContext";
-import { JSONContent } from "novel";
+import { JSONContent} from "novel";
 import { Category } from "@prisma/client";
+import { getAiresponse } from "@/lib/openAi";
 
 export default function CreateBlog({siteId,categories}:{siteId:string,categories:Category[]}) {
   const [imageUrl, setImageUrl] = useState<string>("");
@@ -38,6 +39,7 @@ export default function CreateBlog({siteId,categories}:{siteId:string,categories
       }
     ]
   });
+  const [seoValue, setSeoValue] = useState<string>("");
   const [slug, setSlugValue] = useState<string>("");
   const [category, setCategoryValue] = useState<string>("");
   const [title, setTitle] = useState<string>("");
@@ -49,9 +51,8 @@ export default function CreateBlog({siteId,categories}:{siteId:string,categories
       .replace(/[^\w\s-]/g, "")
       .replace(/[\s_-]+/g, "-")
       .replace(/^-+|-+$/g, "");
-
-  const [form, fields] = useForm({
-    lastResult,
+      const [form, fields] = useForm({
+        lastResult,
 
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: PostSchema });
@@ -72,6 +73,7 @@ export default function CreateBlog({siteId,categories}:{siteId:string,categories
 
     return toast.success("Slug has been created");
   }
+  
   return (
     <>
       <Card>
@@ -221,6 +223,7 @@ export default function CreateBlog({siteId,categories}:{siteId:string,categories
 
             <SubmitButton text="Create Article" />
           </form>
+          <button onClick={() => getAiresponse(title, fields.smallDescription.value??"", fields.articleContent.value??"")}>Check SEO</button>
         </CardContent>
       </Card>
     </>

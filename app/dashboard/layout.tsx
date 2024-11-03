@@ -38,7 +38,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
         </div>
       </div>
       <div className="flex flex-col">
-        <header className="flex backdrop-blur-md md:backdrop-blur-none fixed md:relative w-full h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+        <header className="flex z-10 backdrop-blur-md md:backdrop-blur-none fixed md:relative w-full h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
         <Link href="/" className="flex md:hidden items-center gap-2">
           <Image
             src={Logo}

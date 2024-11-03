@@ -10,7 +10,7 @@ import { toast } from 'sonner'
 const Footer = () => {
   const handleSubscribe=(e:React.FormEvent)=>{
     e.preventDefault();
-    toast.info('Thankyou for showing interst in subscribing to our newsletter will start it soon. stay tuned for more updates!');
+    toast.info('Thankyou for showing interest in subscribing to our newsletter will start it soon. stay tuned for more updates!');
   }
   return (
     <>
